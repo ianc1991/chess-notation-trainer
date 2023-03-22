@@ -4,16 +4,16 @@ import 'chessground/assets/chessground.base.css'
 import 'chessground/assets/chessground.brown.css'
 import 'chessground/assets/chessground.cburnett.css'
 import { onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { Chess } from 'chess.js'
 
 const boardContainer = ref()
+const store = useStore()
+const boardConfig = store.state.board.config
+
 
 onMounted(() => {
-  const chessground = Chessground(boardContainer.value, {
-    // Options for Chessground go here
-    // The initial position of the pieces
-    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
-  });
-
+  const chessground = Chessground(boardContainer.value, boardConfig);
 })
 </script>
 

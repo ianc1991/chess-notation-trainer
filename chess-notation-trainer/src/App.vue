@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import  Board  from './components/board/Board.vue'
+import Board from './components/board/Board.vue'
+import Move from './components/move/Move.vue'
 </script>
 
 <template>
+  <Move />
 <div class="boardCompContainer">
   <Board class="boardComp"/>
 </div>
