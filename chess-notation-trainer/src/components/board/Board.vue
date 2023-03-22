@@ -3,17 +3,35 @@ import { Chessground } from 'chessground'
 import 'chessground/assets/chessground.base.css'
 import 'chessground/assets/chessground.brown.css'
 import 'chessground/assets/chessground.cburnett.css'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import { Chess } from 'chess.js'
+
 
 const boardContainer = ref()
 const store = useStore()
-const boardConfig = store.state.board.config
+const boardConfig = computed(() => store.state.board.config)
 
+function createChessground() {
+  const chessground = Chessground(boardContainer.value, boardConfig.value)
+  chessground.set({
+    movable: {
+      events: {
+        // actions after piece is moved
+        after: (orig, dest, meta)=> {
+          store.commit('setFen', chessground.getFen())
+        }
+      }
+    }
+  })
+  return chessground
+}
 
 onMounted(() => {
-  const chessground = Chessground(boardContainer.value, boardConfig);
+  let chessground = createChessground()
+  watch(boardConfig.value, (newVal) => {
+    chessground.destroy()
+    chessground = createChessground()
+  })
 })
 </script>
 

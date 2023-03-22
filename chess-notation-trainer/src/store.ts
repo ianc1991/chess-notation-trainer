@@ -6,15 +6,15 @@ const store = createStore({
     board: {
       state: {
         config: {
-          fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
-          movable: {
-            free: false
-          }
+          fen: 'start',
         }
       },
       mutations: {
         setFen(state, newFen) {
           state.config.fen = newFen
+        },
+        resetFen(state) {
+          state.config.fen = 'start'
         }
       }
     },
@@ -25,10 +25,10 @@ const store = createStore({
         turn: 1
       },
       mutations: {
-        increment(state) {
+        incrementTurn(state) {
           state.turn++
         },
-        reset(state) {
+        resetTurn(state) {
           state.turn = 1
         }
       }
