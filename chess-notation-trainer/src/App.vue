@@ -2,7 +2,6 @@
 import Board from './components/board/Board.vue'
 import Move from './components/move/Move.vue'
 import Pgn from './components/pgn/Pgn.vue'
-import { Chess } from 'chess.js'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { initiateNewChessGame } from './game-service'

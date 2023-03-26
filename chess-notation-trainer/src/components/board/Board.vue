@@ -5,7 +5,7 @@ import { Api } from 'chessground/api'
 import 'chessground/assets/chessground.base.css'
 import 'chessground/assets/chessground.brown.css'
 import 'chessground/assets/chessground.cburnett.css'
-import { computed, onMounted, ref, toRef, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import { convertPieceToPgnMove, madeCorrectMove } from '../../game-service'
 
@@ -17,8 +17,6 @@ const props = defineProps({
 const boardContainer = ref()
 const store = useStore()
 const boardConfig = computed(() => store.state.board.config)
-let moves = [""]
-let correctPgnMove = moves[props.turnNumber! - 1]
 const chessJsGameRef = toRef(props, 'chessJsGame')
 const turnNumberRef = toRef(props, 'turnNumber')
 let chessground: Api
@@ -28,20 +26,12 @@ function createChessground(fenArg?: string) {
   chessground.set({
     fen: fenArg || 'start',
 
-    movable: {
-
-    },
-
     events: {
       move: (orig, dest, capturedPiece) => {
         // check if move is correct
         const history = chessJsGameRef.value.history({verbose: true})
         const currentMoveHistory = history[turnNumberRef.value - 1]
         const correctMove = currentMoveHistory.lan
-
-        // set correct piece to move
-        let correctPiece
-        currentMoveHistory.piece === 'p' ? correctPiece = '' : correctPiece = currentMoveHistory.piece.toUpperCase()
 
         // get the piece that was moved
         let pieceMove = convertPieceToPgnMove(chessground.state.pieces.get(dest).role)

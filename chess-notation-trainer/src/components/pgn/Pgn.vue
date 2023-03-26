@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Chess } from 'chess.js'
-import { computed, onMounted, toRef, watch } from 'vue'
+import { onMounted, toRef, watch } from 'vue'
 import { useStore } from 'vuex'
-import { initiateNewChessGame } from '../../game-service'
 
 const props = defineProps({
   targetPgn: String,
