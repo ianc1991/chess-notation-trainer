@@ -4,17 +4,35 @@ import Move from './components/move/Move.vue'
 import Pgn from './components/pgn/Pgn.vue'
 import { Chess } from 'chess.js'
 import { useStore } from 'vuex'
+import { computed } from 'vue'
+import { initiateNewChessGame } from './game-service'
+
+
 
 const store = useStore()
-let turnNumber = store.state.game.turn
-let correctMove = store.state.targetPgn
+initiateNewChessGame(store)
+// Store variables
+let turnNumber = computed(() => store.state.game.turn)
+let chessJsGame = computed(() => store.state.game.chessJsGame)
+let targetPgn = computed(() => store.state.targetPgn.pgn)
 </script>
 
 <template>
-  <Move :turn="turnNumber" :move="correctMove" />
-  <Pgn />
+  <Move
+    :turn="turnNumber"
+    :targetPgn="targetPgn"
+  />
+  <Pgn
+    :turnNumber="turnNumber"
+    :targetPgn="targetPgn"
+    :chessJsGame="chessJsGame"
+  />
 <div class="boardCompContainer">
-  <Board class="boardComp"/>
+  <Board
+    :chessJsGame="chessJsGame"
+    :turnNumber="turnNumber"
+    class="boardComp"
+  />
 </div>
 </template>
 

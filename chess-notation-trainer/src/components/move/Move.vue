@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ turn: string }>()
+defineProps<{ turn: Number }>()
 
 
 </script>

@@ -6,7 +6,7 @@ const store = createStore({
     board: {
       state: {
         config: {
-          fen: 'start',
+          fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         }
       },
       mutations: {
@@ -14,24 +14,33 @@ const store = createStore({
           state.config.fen = newFen
         },
         resetFen(state) {
-          state.config.fen = 'start'
+          state.config.fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
         }
       }
     },
 
     // game
     game: {
+      // game state
       state: {
-        turn: 1
+        turn: 1,
+        chessJsGame: undefined,
+
       },
       mutations: {
+        // game.turn mutations
         incrementTurn(state) {
           state.turn++
         },
         resetTurn(state) {
           state.turn = 1
+        },
+        // game.chessJsGame mutation
+        newChessGame(state, game) {
+          state.chessJsGame = game
+          state.turn = 1
         }
-      }
+      },
     },
 
     // targetPgn
