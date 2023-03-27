@@ -13,6 +13,7 @@ export function initiateNewChessGame(store: Store<any>) {
 }
 
 export function madeCorrectMove(store: Store<any>, chessground: Api) {
+  console.log(chessground.state.turnColor)
   store.commit('incrementTurn')
   store.commit('setFen', chessground.getFen())
 }

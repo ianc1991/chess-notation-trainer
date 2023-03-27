@@ -8,6 +8,8 @@ import 'chessground/assets/chessground.cburnett.css'
 import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import { convertPieceToPgnMove, madeCorrectMove } from '../../game-service'
+import _ from 'lodash'
+
 
 const props = defineProps({
   chessJsGame: Chess,
@@ -21,60 +23,70 @@ const chessJsGameRef = toRef(props, 'chessJsGame')
 const turnNumberRef = toRef(props, 'turnNumber')
 let chessground: Api
 
+// delay for when the move is made so the piece can be placed before calculations. helps make it feel smoother
+const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
+  // Process the move here
+  // check if move is correct
+  const history = chessJsGameRef.value.history({verbose: true})
+  const currentMoveHistory = history[turnNumberRef.value - 1]
+  const correctMove = currentMoveHistory.lan
+
+  // get the piece that was moved
+  let pieceMove = convertPieceToPgnMove(chessground.state.pieces.get(dest).role)
+  // get the move that was moved
+  let lastMove = chessground.state.lastMove
+
+  // if a capture was made
+  if (capturedPiece) {
+    if (pieceMove === '') pieceMove = lastMove[0][0] // add rank if pawn
+    pieceMove += 'x'
+  }
+
+  // check if king castled
+  if (pieceMove === 'K') {
+    // short castle
+    if ((lastMove[0] === 'e1' && lastMove[1] === 'g1') || (lastMove[0] === 'e8' && lastMove[1] === 'g8')) {
+      pieceMove = 'O-O'
+      // check if short castle was correct move
+      if (pieceMove === correctMove) {
+        madeCorrectMove(store, chessground)
+        return chessground
+      }
+      // long castle
+    } else if ((lastMove[0] === 'd1' && lastMove[1] === 'b3') || (lastMove[0] === 'd8' && lastMove[1] === 'b8'))  {
+      pieceMove = 'O-O-O'
+      // check if long castle was correct move
+      if (pieceMove === correctMove) {
+        madeCorrectMove(store, chessground)
+        return chessground
+      }
+    }
+  }
+
+
+  if (lastMove[0] + lastMove[1] === correctMove) {
+    // right move
+    madeCorrectMove(store, chessground)
+  } else {
+    // wrong move
+    chessground.set({fen: currentMoveHistory.before})
+    return chessground
+  }
+  // set new FEN
+  store.commit('setFen', chessground.getFen())
+}, 200);
 
 function createChessground(fenArg?: string) {
   chessground.set({
     fen: fenArg || 'start',
+    animation: {
+      duration: 0,
+      enabled: false
+    },
 
     events: {
       move: (orig, dest, capturedPiece) => {
-        // check if move is correct
-        const history = chessJsGameRef.value.history({verbose: true})
-        const currentMoveHistory = history[turnNumberRef.value - 1]
-        const correctMove = currentMoveHistory.lan
-
-        // get the piece that was moved
-        let pieceMove = convertPieceToPgnMove(chessground.state.pieces.get(dest).role)
-        // get the move that was moved
-        let lastMove = chessground.state.lastMove
-
-        // if a capture was made
-        if (capturedPiece) {
-          if (pieceMove === '') pieceMove = lastMove[0][0] // add rank if pawn
-          pieceMove += 'x'
-        }
-
-        // check if king castled
-        if (pieceMove === 'K') {
-          // short castle
-          if ((lastMove[0] === 'e1' && lastMove[1] === 'g1') || (lastMove[0] === 'e8' && lastMove[1] === 'g8')) {
-            pieceMove = 'O-O'
-            // check if short castle was correct move
-            if (pieceMove === correctMove) {
-              madeCorrectMove(store, chessground)
-              return chessground
-            }
-            // long castle
-          } else if ((lastMove[0] === 'd1' && lastMove[1] === 'b3') || (lastMove[0] === 'd8' && lastMove[1] === 'b8'))  {
-            pieceMove = 'O-O-O'
-            // check if long castle was correct move
-            if (pieceMove === correctMove) {
-              madeCorrectMove(store, chessground)
-              return chessground
-            }
-          }
-        }
-
-        if (lastMove[0] + lastMove[1] === correctMove) {
-          // right move
-          store.commit('incrementTurn')
-        } else {
-          // wrong move
-          chessground.set({fen: currentMoveHistory.before})
-          return chessground
-        }
-        // set new FEN
-        store.commit('setFen', chessground.getFen())
+        moveDebounced(orig, dest, capturedPiece)
       }
     }
   })
