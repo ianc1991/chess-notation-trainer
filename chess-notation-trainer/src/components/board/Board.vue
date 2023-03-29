@@ -9,7 +9,7 @@ import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import { convertPieceToPgnMove, madeCorrectMove } from '../../game-service'
 import _ from 'lodash'
-
+import { Dests } from 'chessground/types'
 
 const props = defineProps({
   chessJsGame: Chess,
@@ -19,18 +19,19 @@ const props = defineProps({
 const boardContainer = ref()
 const store = useStore()
 const boardConfig = computed(() => store.state.board.config)
+const turnColor = computed(() => store.state.game.turnColor)
 const chessJsGameRef = toRef(props, 'chessJsGame')
 const turnNumberRef = toRef(props, 'turnNumber')
 let chessground: Api
 
+
+// Process the move here
 // delay for when the move is made so the piece can be placed before calculations. helps make it feel smoother
 const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
-  // Process the move here
   // check if move is correct
   const history = chessJsGameRef.value.history({verbose: true})
   const currentMoveHistory = history[turnNumberRef.value - 1]
   const correctMove = currentMoveHistory.lan
-
   // get the piece that was moved
   let pieceMove = convertPieceToPgnMove(chessground.state.pieces.get(dest).role)
   // get the move that was moved
@@ -50,6 +51,8 @@ const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
       // check if short castle was correct move
       if (pieceMove === correctMove) {
         madeCorrectMove(store, chessground)
+        // set new FEN
+        store.commit('setFen', chessground.getFen())
         return chessground
       }
       // long castle
@@ -58,6 +61,8 @@ const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
       // check if long castle was correct move
       if (pieceMove === correctMove) {
         madeCorrectMove(store, chessground)
+        // set new FEN
+        store.commit('setFen', chessground.getFen())
         return chessground
       }
     }
@@ -70,11 +75,22 @@ const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
   } else {
     // wrong move
     chessground.set({fen: currentMoveHistory.before})
-    return chessground
+    store.commit('setFen', chessground.getFen())
+    return
   }
   // set new FEN
   store.commit('setFen', chessground.getFen())
+  return chessground;
 }, 200);
+
+function getLegalMoves(): Dests {
+  const legalMoves = chessJsGameRef.value.moves({ verbose: true })
+  legalMoves.reduce((acc, move) => {
+      acc.set(move.from, [...(acc.get(move.from) || []), move.to]);
+      return acc;
+    }, new Map<string, string[]>()) as Dests
+    return
+}
 
 function createChessground(fenArg?: string) {
   chessground.set({
@@ -82,6 +98,12 @@ function createChessground(fenArg?: string) {
     animation: {
       duration: 0,
       enabled: false
+    },
+
+    movable: {
+      // THIS BREAKS EVERYTHING :(
+      //color: turnColor.value,
+      //dests: getLegalMoves()
     },
 
     events: {

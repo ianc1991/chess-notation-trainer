@@ -25,7 +25,7 @@ const store = createStore({
       state: {
         turn: 1,
         chessJsGame: undefined,
-
+        turnColor: 'white'
       },
       mutations: {
         // game.turn mutations
@@ -35,10 +35,22 @@ const store = createStore({
         resetTurn(state) {
           state.turn = 1
         },
-        // game.chessJsGame mutation
+        // game.chessJsGame mutations
         newChessGame(state, game) {
           state.chessJsGame = game
           state.turn = 1
+        },
+        setChessGame(state, game) {
+          state.chessJsGame = game
+        },
+        setTurnColor(state) {
+          if (state.turnColor === 'white') {
+            console.log('going black')
+            state.turnColor = 'black'
+          } else {
+            console.log('going white')
+            state.turnColor = 'white'
+          }
         }
       },
     },

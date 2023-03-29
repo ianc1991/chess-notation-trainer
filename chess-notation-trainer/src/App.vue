@@ -6,10 +6,9 @@ import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { initiateNewChessGame } from './game-service'
 
-
-
 const store = useStore()
 initiateNewChessGame(store)
+
 // Store variables
 let turnNumber = computed(() => store.state.game.turn)
 let chessJsGame = computed(() => store.state.game.chessJsGame)
