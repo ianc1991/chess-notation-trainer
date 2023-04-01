@@ -45,10 +45,8 @@ const store = createStore({
         },
         setTurnColor(state) {
           if (state.turnColor === 'white') {
-            console.log('going black')
             state.turnColor = 'black'
           } else {
-            console.log('going white')
             state.turnColor = 'white'
           }
         }
