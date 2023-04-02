@@ -7,7 +7,7 @@ import 'chessground/assets/chessground.brown.css'
 import 'chessground/assets/chessground.cburnett.css'
 import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useStore } from 'vuex'
-import { madeCorrectMove } from '../../game-service'
+import { initiateNewChessGame, madeCorrectMove } from '../../game-service'
 import _ from 'lodash'
 
 const props = defineProps({
@@ -96,8 +96,6 @@ function createChessground(fenArg?: string) {
 			color: 'white',
 		},
 
-		turnColor: 'white',
-
 		events: {
 			move: (orig, dest, capturedPiece) => {
 				moveDebounced(orig, dest, capturedPiece)
@@ -117,9 +115,11 @@ onMounted(() => {
 })
 
 watch(turnNumberRef, (newVal) => {
+	console.log(newVal)
 	if (newVal === 1) {
 		chess = new Chess()
 		createChessground()
+		initiateNewChessGame(store)
 	}
 })
 </script>

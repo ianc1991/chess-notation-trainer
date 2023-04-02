@@ -27,10 +27,6 @@ watch(turnNumberRef, (newVal) => {
 		correctPgnMove = moves[turnNumberRef.value - 1]
 	}
 })
-
-// onMounted(() => {
-// 	setPgn(props.targetPgn)
-// })
 </script>
 
 <!-- T E M P L A T E -->

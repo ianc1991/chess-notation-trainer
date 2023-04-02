@@ -9,7 +9,6 @@ export function initiateNewChessGame(store: Store<any>) {
   store.commit('newChessGame', game)
   store.commit('setTargetPgn', pgn)
   store.commit('resetFen')
-  console.log("New game initiated")
 }
 
 export function madeCorrectMove(store: Store<any>, chessground: Api) {
