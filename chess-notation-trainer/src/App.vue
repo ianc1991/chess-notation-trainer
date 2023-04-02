@@ -22,16 +22,18 @@ function setPgn() {
 </script>
 
 <template>
-	<div class="flex gap-2 justify-center items-center text-5xl font-bold bg-sky-500 text-white py-2 px-4 rounded-lg">
-		<Move
-			:turn="turnNumber"
-			:targetPgn="targetPgn"
-		/>
-		<Pgn
-			:turnNumber="turnNumber"
-			:targetPgn="targetPgn"
-			:chessJsGame="chessJsGame"
-		/>
+	<div class="w-100 flex justify-center">
+		<div class="flex gap-2 justify-center items-center w-1/2 text-5xl font-bold bg-sky-500 text-white py-2 px-4 rounded-lg">
+			<Move
+				:turn="turnNumber"
+				:targetPgn="targetPgn"
+			/>
+			<Pgn
+				:turnNumber="turnNumber"
+				:targetPgn="targetPgn"
+				:chessJsGame="chessJsGame"
+			/>
+		</div>
 	</div>
 	<div class="boardCompContainer mt-10">
 		<Board
