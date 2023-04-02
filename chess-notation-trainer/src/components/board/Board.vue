@@ -9,11 +9,11 @@ import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import { madeCorrectMove } from '../../game-service'
 import _ from 'lodash'
-import { Piece } from 'chessground/types'
 
 const props = defineProps({
 	chessJsGame: Chess,
 	turnNumber: Number,
+	targetPgn: String,
 })
 
 const boardContainer = ref()
@@ -25,7 +25,6 @@ const turnNumberRef = toRef(props, 'turnNumber')
 let chessground: Api
 let chess: Chess = new Chess()
 // Variables for moveDebounced()
-let piece: Piece
 let currentMoveHistory: any
 let history: Move[]
 
@@ -66,7 +65,7 @@ const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
 		chessground.set({ fen: currentMoveHistory.before })
 		return chessground
 	}
-}, 0)
+}, 100)
 
 // gets all legal moves for the current 'chess' variable and sets them as the destinations for the pieces
 function getLegalMoves() {
@@ -101,13 +100,12 @@ function createChessground(fenArg?: string) {
 
 		events: {
 			move: (orig, dest, capturedPiece) => {
-				console.log('debouncing')
 				moveDebounced(orig, dest, capturedPiece)
 			},
 
-			select: (key) => {
-				piece = chessground.state.pieces.get(key)
-			},
+			// select: (key) => {
+			// 	piece = chessground.state.pieces.get(key)
+			// },
 		},
 	})
 	return chessground
