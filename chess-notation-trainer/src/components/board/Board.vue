@@ -44,19 +44,43 @@ const moveDebounced = _.debounce((orig, dest, capturedPiece) => {
 			// play correct move
 			madeCorrectMove(store, chessground)
 			chess.load(chess.fen())
-			return chessground
 		} else {
 			// play incorrect move
-			chessground.set({ fen: currentMoveHistory.before })
 			chess.undo()
-			return chessground
+			chessground.set({
+				fen: currentMoveHistory.before,
+			})
 		}
+
+		chessground.set({
+			movable: {
+				dests: getLegalMoves(),
+				color: turnColor.value,
+			},
+			turnColor: turnColor.value,
+		})
+
+		return chessground
 	} catch (error) {
 		chess.undo()
 		chessground.set({ fen: currentMoveHistory.before })
 		return chessground
 	}
 }, 0)
+
+// gets all legal moves for the current 'chess' variable and sets them as the destinations for the pieces
+function getLegalMoves() {
+	let legalMoves = chess.moves({ verbose: true })
+	let legalMovesMap = new Map()
+	legalMoves.forEach((move) => {
+		if (legalMovesMap.has(move.from)) {
+			legalMovesMap.get(move.from).push(move.to)
+		} else {
+			legalMovesMap.set(move.from, [move.to])
+		}
+	})
+	return legalMovesMap
+}
 
 function createChessground(fenArg?: string) {
 	history = chessJsGameRef.value.history({ verbose: true })
@@ -68,13 +92,16 @@ function createChessground(fenArg?: string) {
 		},
 
 		movable: {
-			free: true,
+			free: false,
+			dests: getLegalMoves(),
+			color: 'white',
 		},
 
 		turnColor: 'white',
 
 		events: {
 			move: (orig, dest, capturedPiece) => {
+				console.log('debouncing')
 				moveDebounced(orig, dest, capturedPiece)
 			},
 
@@ -94,7 +121,7 @@ onMounted(() => {
 watch(turnNumberRef, (newVal) => {
 	if (newVal === 1) {
 		chess = new Chess()
-		chessground.set({ fen: 'start' })
+		createChessground()
 	}
 })
 </script>
