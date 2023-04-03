@@ -1,0 +1,38 @@
+<script setup lang="ts">
+	import { useStore } from 'vuex'
+	import { initiateNewChessGame } from '../../game-service'
+
+	const store = useStore()
+
+	function loadPgn() {
+		const pgnInput = document.getElementById('large-input') as HTMLInputElement
+		const pgn = pgnInput.value
+
+		initiateNewChessGame(store, pgn)
+	}
+</script>
+
+<template>
+	<div class="flex flex-col justify-content">
+		<div class="mb-6">
+			<label
+				for="large-input"
+				class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+				>Enter PGN</label
+			>
+			<input
+				type="text"
+				id="large-input"
+				class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			/>
+		</div>
+		<div class="flex justify-center">
+			<button
+				class="rounded-full bg-sky-500 text-white py-2 px-4"
+				@click="loadPgn()"
+			>
+				Load PGN
+			</button>
+		</div>
+	</div>
+</template>

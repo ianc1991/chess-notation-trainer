@@ -1,3 +1,4 @@
+import { Chess } from 'chess.js'
 import { createStore } from 'vuex'
 
 const store = createStore({
@@ -36,19 +37,16 @@ const store = createStore({
           state.turn = 1
         },
         // game.chessJsGame mutations
-        newChessGame(state, game) {
+        newChessGame(state, game: Chess) {
           state.chessJsGame = game
           state.turn = 1
         },
         setChessGame(state, game) {
           state.chessJsGame = game
         },
+        // game.turnColor mutations
         setTurnColor(state) {
-          if (state.turnColor === 'white') {
-            state.turnColor = 'black'
-          } else {
-            state.turnColor = 'white'
-          }
+          state.turnColor = state.turn % 2 === 0 ? 'black' : 'white'
         }
       },
     },
