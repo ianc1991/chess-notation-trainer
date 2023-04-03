@@ -68,7 +68,7 @@
 			chessground.set({ fen: currentMoveHistory.before })
 			return chessground
 		}
-	}, 100)
+	}, 10)
 
 	// gets all legal moves for the current 'chess' variable and sets them as the destinations for the pieces
 	function getLegalMoves() {
