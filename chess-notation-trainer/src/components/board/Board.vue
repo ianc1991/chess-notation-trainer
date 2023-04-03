@@ -26,7 +26,7 @@
 	const targetPgnRef = toRef(props, 'targetPgn')
 	const boardKey = toRef(props, 'boardKey')
 	let chessground: Api
-	let chess: Chess = new Chess()
+	let chess = new Chess()
 	// Variables for moveDebounced()
 	let currentMoveHistory: any
 	let history: Move[]
@@ -93,8 +93,8 @@
 
 		chessground = Chessground(boardContainer.value, boardConfig.value)
 		chess = new Chess()
-
 		history = chessJsGameRef.value.history({ verbose: true })
+
 		chessground.set({
 			fen: 'start',
 			animation: {
@@ -125,18 +125,9 @@
 		createChessground()
 	})
 
-	watch(turnNumberRef, (newVal) => {
-		if (newVal === 1) {
-			chess = new Chess()
-			chess.loadPgn(targetPgnRef.value)
-			initiateNewChessGame(store)
-			createChessground()
-		}
-	})
-
+	// Recreate chessground when turnNumber or targetPgn change
 	watch(targetPgnRef, (newVal) => {
-		chess = new Chess()
-		chess.loadPgn(targetPgnRef.value)
+		initiateNewChessGame(store, newVal)
 		createChessground()
 	})
 

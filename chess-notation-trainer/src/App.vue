@@ -21,7 +21,7 @@
 
 	// reset pgn
 	function resetPgn() {
-		initiateNewChessGame(store)
+		initiateNewChessGame(store, targetPgn.value)
 		boardKey++ // update the key to recreate the Board component
 	}
 </script>
