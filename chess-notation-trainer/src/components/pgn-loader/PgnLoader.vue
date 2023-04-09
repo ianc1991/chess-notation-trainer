@@ -1,8 +1,13 @@
 <script setup lang="ts">
 	import { useStore } from 'vuex'
 	import { initiateNewChessGame } from '../../game-service'
+	import { computed } from 'vue'
+	import PrimaryButton from '../Reusables/Button/Primary/PrimaryButton.vue'
 
 	const store = useStore()
+
+	// get fen from the store
+	const fen = computed(() => store.state.game.fen)
 
 	function loadPgn() {
 		const pgnInput = document.getElementById('large-input') as HTMLInputElement
@@ -27,12 +32,10 @@
 			/>
 		</div>
 		<div class="flex justify-center">
-			<button
-				class="px-4 py-2 text-white rounded-full bg-sky-500"
+			<PrimaryButton
+				text="Load PGN"
 				@click="loadPgn()"
-			>
-				Load PGN
-			</button>
+			/>
 		</div>
 	</div>
 </template>

@@ -8,4 +8,14 @@ module.exports = {
 			},
 		},
 	},
+
+	devServer: {
+		proxy: {
+			'^/api': {
+				target: 'https://lichess.org',
+				changeOrigin: true,
+				pathRewrite: { '^/api': '/api' },
+			},
+		},
+	},
 }
