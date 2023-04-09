@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Ix0ptl7Y1HRaq7OWkjb74+ukCRQqbiOR8+OhOvpNoiMQe5oVW3HEbXC8pdu1/pOub48thrv9NzJgTplSXwkvHQ==",
+  "success": true,
+  "projectFilePath": "D:\\Coding\\Projects\\ChessNotationTrainer\\backend\\NotationTrainerAPI\\NotationTrainerAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ianmc\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.17.2\\microsoft.visualstudio.azure.containers.tools.targets.1.17.2.nupkg.sha512"
+  ],
+  "logs": []
+}
